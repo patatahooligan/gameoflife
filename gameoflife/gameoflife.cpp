@@ -4,9 +4,13 @@
 #include "stdafx.h"
 
 #include "gridwrapper.h"
+#include "render.h"
 
-int main()
+GridWrapper grid_wrapper;
+
+int main(int argc, char** argv)
 {
+	render_init(argc, argv);
+	glutMainLoop();
     return 0;
 }
-

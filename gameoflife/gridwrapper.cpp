@@ -5,10 +5,13 @@
 
 #include "gridwrapper.h"
 
+bool wrap = true;
 
-
-std::bitset<grid_size>::reference GridWrapper::new_cell(size_t x, size_t y) {
-	return (*new_grid)[y * grid_width + x];
+std::bitset<grid_size>::reference GridWrapper::new_cell(int x, int y) {
+	if (!wrap)
+		return (*new_grid)[y * grid_width + x];
+	else
+		return (*new_grid)[(y%grid_height) * grid_width + (x%grid_width)];
 }
 
 GridWrapper::GridWrapper() :
@@ -31,21 +34,21 @@ void GridWrapper::turn() {
 	new_grid.reset(new std::bitset<grid_size>);
 
 	// Iterate over all cells in the grid
-	for (size_t y=0; y<grid_height; ++y) {
-		for (size_t x=0; x<grid_width; ++x) {
+	for (int y=0; y<grid_height; ++y) {
+		for (int x=0; x<grid_width; ++x) {
 			// Boundary check
 			unsigned char neighbors = 0;
-			size_t minj = y-1;
-			if (y==0) minj = 0;
-			size_t maxj = y+1;
-			if (y==grid_height-1) maxj = grid_height-1;
-			for (size_t j = minj; j <= maxj; ++j) {
+			int minj = y-1;
+			if (y==0 && !wrap) minj = 0;
+			int maxj = y+1;
+			if (y==grid_height-1 && !wrap) maxj = grid_height-1;
+			for (int j = minj; j <= maxj; ++j) {
 				// Boundary check
-				size_t mini = x-1;
-				if (x==0) mini = 0;
-				size_t maxi = x+1;
-				if (x==grid_width-1) maxi = grid_width-1;
-				for (size_t i = mini; i <= maxi; ++i) {
+				int mini = x-1;
+				if (x==0 && !wrap) mini = 0;
+				int maxi = x+1;
+				if (x==grid_width-1 && !wrap) maxi = grid_width-1;
+				for (int i = mini; i <= maxi; ++i) {
 					if (i==x && j==y) continue;
 					neighbors += cell(i, j);
 				}
@@ -63,6 +66,9 @@ void GridWrapper::turn() {
 	grid = std::move(new_grid);
 }
 
-std::bitset<grid_size>::reference GridWrapper::cell(size_t x, size_t y) {
-	return (*grid)[y * grid_width + x];
+std::bitset<grid_size>::reference GridWrapper::cell(int x, int y) {
+	if (!wrap)
+		return (*grid)[y * grid_width + x];
+	else
+		return (*grid)[((y+grid_height)%grid_height) * grid_width + ((x+grid_width)%grid_width)];
 }

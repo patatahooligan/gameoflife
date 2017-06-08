@@ -11,7 +11,7 @@ std::bitset<grid_size>::reference GridWrapper::new_cell(int x, int y) {
 	if (!wrap)
 		return (*new_grid)[y * grid_width + x];
 	else
-		return (*new_grid)[(y%grid_height) * grid_width + (x%grid_width)];
+		return (*new_grid)[((y+grid_height)%grid_height) * grid_width + ((x+grid_width)%grid_width)];
 }
 
 GridWrapper::GridWrapper() :

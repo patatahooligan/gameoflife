@@ -9,6 +9,7 @@ extern GridWrapper grid_wrapper;
 
 const int window_width = 800;
 const int window_height = 800;
+const double target_refresh_rate = 0.5;
 
 bool play = false;
 
@@ -58,8 +59,12 @@ void render() {
 }
 
 void idle() {
+	static clock_t begin = std::clock();
+	clock_t current = std::clock();
+	if (double(current-begin)/CLOCKS_PER_SEC < target_refresh_rate) return;
 	if (play) {
 		grid_wrapper.turn();
+		begin = std::clock();
 		glutPostRedisplay();
 	}
 }
@@ -72,7 +77,14 @@ void mouse(int button, int state, int x, int y) {
 }
 
 void keyboard(unsigned char key, int x, int y) {
-	if (key == ' ') {
+	switch (key) {
+	case ' ':
 		play = !play;
+		break;
+	case 'r':
+		grid_wrapper.reset();
+		play = false;
+		break;
 	}
+	glutPostRedisplay();
 }

@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <ctime>
 
 #include "GL/freeglut.h"
 

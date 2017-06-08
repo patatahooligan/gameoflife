@@ -10,6 +10,8 @@ extern GridWrapper grid_wrapper;
 const int window_width = 800;
 const int window_height = 800;
 
+bool play = false;
+
 void render_init(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitWindowSize(window_width, window_height);
@@ -18,11 +20,15 @@ void render_init(int argc, char** argv) {
 	glutCreateWindow("Game of Life");
 	glutDisplayFunc(render);
 	glutIdleFunc(idle);
+	glutMouseFunc(mouse);
+	glutKeyboardFunc(keyboard);
 	gluOrtho2D(0.0, window_width, 0.0, window_height);
 }
 
 void render() {
 	// Draw grid
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	glColor3f(0.3f, 0.3f, 0.3f);
 	glBegin(GL_LINES);
 	for (float x = window_width / grid_width; x < window_width; x += window_width / grid_width) {
@@ -52,5 +58,21 @@ void render() {
 }
 
 void idle() {
-	glutPostRedisplay();
+	if (play) {
+		grid_wrapper.turn();
+		glutPostRedisplay();
+	}
+}
+
+void mouse(int button, int state, int x, int y) {
+	if (button==GLUT_LEFT_BUTTON && state==GLUT_DOWN) {
+		grid_wrapper.cell((int)(x*grid_width)/window_width, grid_height-1 - (y*grid_height)/window_height).flip();
+		glutPostRedisplay();
+	}
+}
+
+void keyboard(unsigned char key, int x, int y) {
+	if (key == ' ') {
+		play = !play;
+	}
 }

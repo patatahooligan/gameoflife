@@ -46,7 +46,7 @@ void GridWrapper::turn() {
 				size_t maxi = x+1;
 				if (x==grid_width-1) maxi = grid_width-1;
 				for (size_t i = mini; i <= maxi; ++i) {
-					if (i==j) continue;
+					if (i==x && j==y) continue;
 					neighbors += cell(i, j);
 				}
 			}
